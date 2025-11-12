@@ -1,0 +1,49 @@
+name: Deploy to Server (SSH)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SSH client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: |
+            ${{ secrets.SSH_KEY }}
+
+      - name: Add known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          APP_DIR: ${{ secrets.APP_DIR }}
+        run: |
+          ssh -o StrictHostKeyChecking=yes ${SSH_USER}@${SSH_HOST} << 'EOF'
+          set -euo pipefail
+          cd "$APP_DIR"
+          # Get latest code
+          if [ -d .git ]; then
+            git fetch --all --prune
+            git reset --hard origin/main
+          fi
+          # Compose up
+          docker compose pull || true
+          docker compose up -d --build
+          docker compose ps
+          # Optional: cleanup old images
+          docker image prune -f || true
+          EOF

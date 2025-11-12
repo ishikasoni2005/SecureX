@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  spam-model:
+    build:
+      context: .
+      dockerfile: ml/Dockerfile
+    restart: unless-stopped
+    environment:
+      - SPAM_MODEL_PATH=/app/ml/spam_model.joblib
+    ports:
+      - "8001:8001"
+
+  backend:
+    build:
+      context: securex-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - redis
+      - spam-model
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - CLIENT_URL=http://localhost:3000
+      - MONGODB_URI=mongodb://mongo:27017/securex
+      - REDIS_URL=redis://redis:6379
+      - SPAM_SERVICE_URL=http://spam-model:8001
+      # Set secrets via env or an .env file (not committed)
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRE=7d
+      - JWT_COOKIE_EXPIRE=7
+      - BCRYPT_SALT_ROUNDS=12
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: securex-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_BASE_URL=/api/v1
+      - REACT_APP_WS_BASE_URL=ws://localhost:5000
+      - REACT_APP_ENCRYPTION_KEY=${REACT_APP_ENCRYPTION_KEY}
+      - NODE_ENV=production
+    ports:
+      - "3000:80"
+
+volumes:
+  mongo-data:
+
+

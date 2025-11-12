@@ -1,0 +1,21 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), location=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/*.js
+  Cache-Control: public, immutable, max-age=31536000
+
+/*.css
+  Cache-Control: public, immutable, max-age=31536000
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/api/*
+  Access-Control-Allow-Origin: https://securex.example.com
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With

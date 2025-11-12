@@ -1,0 +1,79 @@
+{
+  "name": "securex-frontend",
+  "version": "1.0.0",
+  "description": "Enterprise Security Management Platform",
+  "private": true,
+  "dependencies": {
+    "axios": "^1.6.0",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^2.30.0",
+    "i18next": "^22.5.0",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^12.3.0",
+    "react-router-dom": "^6.8.0",
+    "react-scripts": "5.0.1",
+    "recharts": "^2.8.0",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^9.0.1",
+    "web-vitals": "^3.3.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "eslint": "^8.45.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "lighthouse": "^11.0.0",
+    "pa11y-ci": "^3.0.1",
+    "source-map-explorer": "^2.5.3",
+    "webpack-bundle-analyzer": "^4.9.0"
+  },
+  "scripts": {
+    "start": "REACT_APP_API_BASE_URL=/api/v1 react-scripts start",
+    "build": "react-scripts build",
+    "build:prod": "node build-script.js",
+    "test": "react-scripts test",
+    "test:ci": "npm run test -- --coverage --watchAll=false",
+    "test:a11y": "pa11y-ci --sitemap http://localhost:3000/sitemap.xml",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix",
+    "analyze": "source-map-explorer 'build/static/js/*.js' --html analyze.html",
+    "security:audit": "npm audit --audit-level high",
+    "security:fix": "npm audit fix",
+    "i18n:extract": "i18next-parser 'src/**/*.{js,jsx}' -o src/i18n/locales",
+    "docker:build": "docker build -t securex-frontend .",
+    "docker:run": "docker run -p 3000:80 securex-frontend",
+    "docker:compose": "docker-compose up -d",
+    "deploy:staging": "npm run build:prod && npm run docker:build && docker push securex-frontend:staging",
+    "deploy:production": "npm run build:prod && npm run docker:build && docker push securex-frontend:production",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build",
+    "performance:test": "lighthouse http://localhost:3000 --view",
+    "bundle:analyze": "webpack-bundle-analyzer build/static/js/*.js"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "proxy": "http://localhost:5001"
+}

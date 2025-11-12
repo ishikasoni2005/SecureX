@@ -1,0 +1,9 @@
+# Security redirects
+/http: https://securex.example.com:443 301
+/www: https://securex.example.com 301
+
+# Client-side routing
+/* /index.html 200
+
+# API proxy
+/api/* https://api.securex.example.com/api/:splat 200
