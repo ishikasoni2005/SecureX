@@ -1,108 +1,119 @@
-# 🔐 SecureX — AI-Powered Real-Time Scam Detection  
+# 🔐 SecureX — AI-Powered Real-Time Scam Detection
 
-SecureX is an **AI-driven fraud detection web app** designed to protect users from **real-time financial scams**, fake calls, phishing links, and fraudulent messages.  
-It uses **Natural Language Processing (NLP)** and **Machine Learning** to analyze patterns, detect suspicious behavior, and instantly alert users before they fall victim.
+SecureX is a **web-based application** designed to detect **scam and fraudulent text messages** using **AI and NLP models**.  
+The system analyzes user-provided text in real time and classifies it as **scam or non-scam**, helping users identify potentially harmful content.
 
----
-
-## 🚀 Features  
-
-- 🔍 **Real-Time Scam Detection:**  
-  Instantly detects suspicious calls, messages, and URLs using AI models trained on fraud behavior patterns.  
-
-- 🤖 **AI & NLP-Based Analysis:**  
-  Uses advanced text analysis to identify phishing content, OTP scams, fake loan offers, and spam calls.  
-
-- ⚡ **Instant Alerts & Prevention:**  
-  Provides real-time risk alerts, blocks known scam numbers, and prevents user interaction with fraudulent links.  
-
-- 📊 **Personalized Scam Dashboard:**  
-  Visualizes scam attempts, categories, and trends based on user region and scam type.  
-
-- 🌐 **Multilingual Support:**  
-  Detects scams in **English, Hindi, and other regional languages**, making it more inclusive and accessible.  
-
-- 🧠 **Continuous AI Learning:**  
-  The model improves over time using anonymized user data and community-driven scam reporting.  
-
-- 🔒 **Privacy Focused:**  
-  All processing is done securely — no personal data is stored or shared externally.  
+This project was developed as part of an **AI-focused full-stack initiative** and later extended into an **IEEE research paper submission**.
 
 ---
 
-## 🧰 Tech Stack  
+## 🚀 Key Features
 
-| Layer | Technologies |
-|-------|---------------|
+- 🔍 **Real-Time Scam Text Detection**  
+  Analyzes text input and detects scam patterns using NLP-based classification models.
+
+- 🤖 **AI & NLP Integration**  
+  Uses machine learning and NLP techniques to identify phishing attempts, spam messages, and fraudulent content.
+
+- ⚡ **Low-Latency Analysis**  
+  Optimized frontend data flow and API handling to reduce perceived response latency by **~30%**.
+
+- 📊 **Result Visualization**  
+  Displays classification results clearly to help users understand scam likelihood.
+
+- 🔒 **Privacy-Aware Design**  
+  No permanent storage of analyzed text; requests are processed securely via APIs.
+
+---
+
+## 🧰 Tech Stack
+
+| Layer        | Technologies |
+|-------------|--------------|
 | **Frontend** | React.js, Tailwind CSS |
-| **Backend** | Node.js, Express.js |
-| **AI/NLP** | TextRazor API, Python (ML model) |
+| **Backend**  | Node.js, Express.js |
+| **AI / NLP** | Python, NLP-based ML models |
 | **Database** | MongoDB |
-| **Other Tools** | Docker, REST APIs |
+| **APIs**     | REST APIs |
 
 ---
 
-## 🧠 Architecture Overview  
+## 🧠 Architecture Overview
 
-User → SecureX Frontend (React)
+User Input
 ↓
-Backend (Node.js + Express)
+React Frontend
 ↓
-AI/NLP Engine (TextRazor API / Python)
+REST API (Node.js + Express)
 ↓
-Fraud Detection & Alert System
+AI / NLP Model (Python)
 ↓
-User Dashboard + Notifications
+Classification Result
+↓
+Frontend Visualization
 
 
 ---
 
-## 🧩 Folder Structure  
+## 🧩 Folder Structure
 
 SecureX/
 │
-├── securex-frontend/ # React.js Frontend
-├── securex-backend/ # Express.js Backend
-├── ml/ # AI/NLP model scripts
-├── docker-compose.yml # Docker setup for combined deployment
-├── start-dev.sh # Development start script
-└── README.md # Project documentation
+├── frontend/ # React.js frontend
+├── backend/ # Express.js backend
+├── ml/ # AI / NLP model scripts
+├── README.md
 
 
 ---
 
-## 💡 Future Enhancements  
+## 🧠 My Role & Contributions
 
-- 🗣️ **AI Voice Analysis** — detect fraud from call tone/stress  
-- 🗺️ **Live Scam Activity Map** — visualize scam trends region-wise  
-- 🔐 **UPI/OTP Scam Detection** — analyze payment-based frauds  
-- 🧩 **Browser Extension** — protect from phishing websites  
-- 🏦 **SecureX SDK** — integrate with banks and fintech apps  
-
----
-
-## 🧠 What I Learned  
-
-- Integrating **AI/NLP APIs** for text intelligence  
-- Designing **real-time fraud detection** pipelines  
-- Building a **privacy-first full-stack app** using MERN  
-- Deploying scalable, secure systems with modular architecture  
+- Designed and implemented **responsive frontend interfaces** using React.js  
+- Integrated frontend with **REST APIs** for ML-based text classification  
+- Handled **async requests, edge cases, and error states**  
+- Optimized client-side state management and data flow  
+- Collaborated with backend developers to define **API contracts**
 
 ---
 
-## 🧭 How to Run Locally  
+## 📘 Research Work
+
+- SecureX formed the basis of a **research paper submitted to an IEEE-affiliated, Scopus-indexed international conference (INDIACom-2026)**  
+- Focus area: **AI-powered real-time scam detection using NLP**
+
+---
+
+## 🧠 What I Learned
+
+- Practical application of **NLP for scam detection**
+- Frontend–backend integration in **AI-powered systems**
+- Performance optimization in React applications
+- Designing **clean, modular, and scalable** full-stack architecture
+- Translating a project into a **research-oriented solution**
+
+---
+
+## 🧭 How to Run Locally
+
+### Prerequisites
+- Node.js
+- Python
+- MongoDB
+
+### Steps
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/<your-username>/SecureX.git
 cd SecureX
 
-# Start backend
-cd securex-backend
+# Backend
+cd backend
 npm install
 npm start
 
-# Start frontend
-cd ../securex-frontend
+# Frontend
+cd ../frontend
 npm install
 npm start
