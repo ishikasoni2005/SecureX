@@ -1,119 +1,182 @@
 # 🔐 SecureX — AI-Powered Real-Time Scam Detection
 
-SecureX is a **web-based application** designed to detect **scam and fraudulent text messages** using **AI and NLP models**.  
-The system analyzes user-provided text in real time and classifies it as **scam or non-scam**, helping users identify potentially harmful content.
+SecureX is an **AI-powered web application** designed to detect **scam and fraudulent text messages** in real time using **Natural Language Processing (NLP) models**.  
+
+The system analyzes user-provided text and classifies it as **Scam or Safe**, helping users quickly identify potentially harmful content such as phishing attempts and spam messages.
 
 This project was developed as part of an **AI-focused full-stack initiative** and later extended into an **IEEE research paper submission**.
 
 ---
 
-## 🚀 Key Features
+# 🚀 Features
 
-- 🔍 **Real-Time Scam Text Detection**  
-  Analyzes text input and detects scam patterns using NLP-based classification models.
+### 🔍 Real-Time Scam Detection
+Analyzes user input text and detects potential scam patterns using machine learning models.
 
-- 🤖 **AI & NLP Integration**  
-  Uses machine learning and NLP techniques to identify phishing attempts, spam messages, and fraudulent content.
+### 🤖 AI & NLP Integration
+Uses **NLP-based classification models** to identify phishing attempts, spam, and fraudulent messages.
 
-- ⚡ **Low-Latency Analysis**  
-  Optimized frontend data flow and API handling to reduce perceived response latency by **~30%**.
+### ⚡ Fast Response Time
+Optimized API communication and frontend state handling to deliver **low-latency predictions**.
 
-- 📊 **Result Visualization**  
-  Displays classification results clearly to help users understand scam likelihood.
+### 📊 Result Visualization
+Displays prediction results clearly with **classification labels and confidence scores**.
 
-- 🔒 **Privacy-Aware Design**  
-  No permanent storage of analyzed text; requests are processed securely via APIs.
+### 🔒 Privacy-Focused Design
+User input is processed **in memory only** and is not stored permanently in the database.
 
 ---
 
-## 🧰 Tech Stack
+# 🧰 Tech Stack
 
-| Layer        | Technologies |
-|-------------|--------------|
+| Layer | Technologies |
+|------|-------------|
 | **Frontend** | React.js, Tailwind CSS |
-| **Backend**  | Node.js, Express.js |
-| **AI / NLP** | Python, NLP-based ML models |
-| **Database** | MongoDB |
-| **APIs**     | REST APIs |
+| **Backend** | Django, Django REST Framework |
+| **AI / NLP** | Python, Scikit-learn, NLP preprocessing |
+| **Database** | SQLite / PostgreSQL |
+| **API Communication** | REST APIs |
 
 ---
 
-## 🧠 Architecture Overview
+# 🧠 System Architecture
+
 
 User Input
 ↓
 React Frontend
 ↓
-REST API (Node.js + Express)
+Django REST API
 ↓
-AI / NLP Model (Python)
+Text Preprocessing
 ↓
-Classification Result
+NLP / ML Model Prediction
 ↓
-Frontend Visualization
+Scam Classification
+↓
+Response Sent to Frontend
+↓
+Result Visualization
 
 
 ---
 
-## 🧩 Folder Structure
+# 📂 Project Structure
+
+
 
 SecureX/
 │
-├── frontend/ # React.js frontend
-├── backend/ # Express.js backend
-├── ml/ # AI / NLP model scripts
-├── README.md
+├── frontend/ # React.js application
+│ ├── src/
+│ │ ├── components/
+│ │ ├── pages/
+│ │ ├── services/
+│ │ └── App.jsx
+│ └── package.json
+│
+├── backend/ # Django backend
+│ ├── manage.py
+│ ├── securex/
+│ └── detector/
+│ ├── views.py
+│ ├── urls.py
+│ └── ml_model/
+│ ├── model.pkl
+│ ├── preprocess.py
+│ └── predictor.py
+│
+├── requirements.txt
+└── README.md
 
 
----
-
-## 🧠 My Role & Contributions
-
-- Designed and implemented **responsive frontend interfaces** using React.js  
-- Integrated frontend with **REST APIs** for ML-based text classification  
-- Handled **async requests, edge cases, and error states**  
-- Optimized client-side state management and data flow  
-- Collaborated with backend developers to define **API contracts**
-
----
-
-## 📘 Research Work
-
-- SecureX formed the basis of a **research paper submitted to an IEEE-affiliated, Scopus-indexed international conference (INDIACom-2026)**  
-- Focus area: **AI-powered real-time scam detection using NLP**
-
----
-
-## 🧠 What I Learned
-
-- Practical application of **NLP for scam detection**
-- Frontend–backend integration in **AI-powered systems**
-- Performance optimization in React applications
-- Designing **clean, modular, and scalable** full-stack architecture
-- Translating a project into a **research-oriented solution**
 
 ---
 
-## 🧭 How to Run Locally
+# 🧠 My Contributions
 
-### Prerequisites
+- Developed **responsive frontend interfaces** using React.js  
+- Integrated **React frontend with Django REST APIs**  
+- Implemented **async API communication and error handling**  
+- Optimized frontend state management for faster response  
+- Collaborated on **API design and ML model integration**
+
+---
+
+# 📘 Research Contribution
+
+SecureX formed the basis of a **research paper submitted to an IEEE-affiliated, Scopus-indexed international conference (INDIACom-2026)**.
+
+**Research Focus:**  
+AI-powered **real-time scam detection using NLP techniques**.
+
+---
+
+# 🧠 Key Learnings
+
+- Applying **Natural Language Processing for scam detection**
+- Building **AI-powered full-stack applications**
+- Integrating **React frontend with Django REST backend**
+- Designing **scalable and modular architectures**
+- Translating practical software projects into **research-oriented solutions**
+
+---
+
+# ⚙️ Installation & Setup
+
+## Prerequisites
+
+- Python 3.9+
 - Node.js
-- Python
-- MongoDB
+- npm
+- pip
+- virtualenv
 
-### Steps
+---
+
+# 1️⃣ Clone Repository
 
 ```bash
-# Clone repository
 git clone https://github.com/<your-username>/SecureX.git
 cd SecureX
 
-# Backend
-cd backend
-npm install
-npm start
 
-# Frontend
-cd ../frontend
+
+2️⃣ Backend Setup (Django)
+cd backend
+
+python -m venv venv
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+python manage.py migrate
+python manage.py runserver
+Backend runs at:
+http://127.0.0.1:8000
+3️⃣ Frontend Setup (React)
+cd frontend
+
 npm install
 npm start
+Frontend runs at:
+http://localhost:3000
+📡 API Endpoint
+Detect Scam
+POST
+/api/detect/
+Request
+{
+"text": "Your bank account has been suspended. Click here to verify."
+}
+Response
+{
+"classification": "Scam",
+"confidence": 0.92
+}
+🔮 Future Improvements
+Email and SMS scam detection support
+Real-time browser extension integration
+Continuous model training with new scam datasets
+Deployment using Docker and cloud platforms
+User feedback system to improve model accuracy
