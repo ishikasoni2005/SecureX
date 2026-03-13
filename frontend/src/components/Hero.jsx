@@ -8,29 +8,29 @@ function Hero() {
       <div className="relative grid items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="max-w-3xl">
           <span className="inline-flex rounded-full border border-neon/20 bg-neon/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.24em] text-neon">
-            AI scam detection for text messages
+            AI fraud detection across messages, calls, websites, and storefronts
           </span>
           <h1 className="mt-6 font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-            Detect suspicious messages before they turn into expensive mistakes.
+            Detect scams before they reach your inbox, browser, or checkout page.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[color:var(--muted-text)]">
-            SecureX analyzes phishing-style urgency, credential theft cues, and payment
-            manipulation language in seconds, then explains why a message looks risky.
+            SecureX scores phishing-style urgency, impersonation, malicious links, fake stores,
+            and live-call pressure in seconds, then explains why the content looks risky.
           </p>
 
           <div className="mt-8 flex flex-col gap-4 sm:flex-row">
             <Link
-              to="/detect"
+              to="/message-scan"
               className="inline-flex items-center justify-center rounded-full bg-neon px-6 py-3 text-sm font-semibold text-ink transition hover:scale-[1.02] hover:bg-[#72f6d1]"
             >
-              Check Message
+              Scan a message
             </Link>
-            <a
-              href="#how-it-works"
+            <Link
+              to="/dashboard"
               className="inline-flex items-center justify-center rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-[color:var(--app-text)] transition hover:border-white/30 hover:bg-white/5"
             >
-              See how it works
-            </a>
+              Open dashboard
+            </Link>
           </div>
         </div>
 
@@ -40,10 +40,10 @@ function Hero() {
               Threat signal
             </p>
             <p className="mt-3 text-xl font-semibold">
-              “Verify your salary account now or access will be revoked.”
+              “Stay on the line and read me the OTP to secure your bank account.”
             </p>
             <p className="mt-3 text-sm text-[color:var(--muted-text)]">
-              High-risk urgency + account compromise language.
+              High-risk impersonation, urgency, and credential theft pressure.
             </p>
           </div>
 
@@ -51,9 +51,10 @@ function Hero() {
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-neon">
               Privacy first
             </p>
-            <p className="mt-3 text-xl font-semibold">No message text is stored in the database.</p>
+            <p className="mt-3 text-xl font-semibold">No submitted analysis payload is stored.</p>
             <p className="mt-3 text-sm text-[color:var(--muted-text)]">
-              Detection runs in memory and returns only the AI verdict.
+              Detection runs in memory, masks sensitive data before AI inference, and returns only
+              the risk result.
             </p>
           </div>
         </div>

@@ -1,29 +1,51 @@
 import { Link } from "react-router-dom";
 
+import ModuleCard from "../components/dashboard/ModuleCard";
 import Hero from "../components/Hero";
 
 const features = [
   {
-    title: "Live risk scoring",
+    title: "Unified fraud scoring",
     description:
-      "Classifies messages as Scam or Not Scam in seconds and surfaces a confidence score."
+      "SecureX reuses a shared AI core across messages, call transcripts, suspicious URLs, and online storefronts."
   },
   {
     title: "Explainable output",
     description:
-      "Highlights the language cues behind the model verdict so users know what triggered it."
+      "Every module returns a confidence score, risk level, and human-readable explanations for the detection."
   },
   {
     title: "Privacy by design",
     description:
-      "User text stays in memory during the request and is never written to the SQLite database."
+      "Sensitive number patterns are masked before model inference and request bodies are processed in memory only."
   }
 ];
 
 const workflow = [
-  "Paste or type any suspicious message into the detector.",
-  "SecureX preprocesses the text and runs it through a scikit-learn classifier.",
-  "The API returns a verdict, confidence score, and plain-language explanation."
+  "Choose the scanner that matches the threat surface: message, call, website, or storefront.",
+  "SecureX masks sensitive data, extracts links, applies heuristics, and runs the shared NLP model.",
+  "The API returns a verdict, confidence score, risk level, and human-readable reasons without storing the payload."
+];
+
+const modules = [
+  {
+    badge: "SMS / Chat",
+    title: "Message Scanner",
+    description: "Analyze phishing texts, fake banking alerts, prize scams, and credential theft bait.",
+    to: "/message-scan"
+  },
+  {
+    badge: "Phone Calls",
+    title: "Call Analyzer",
+    description: "Detect live-call pressure around OTP theft, impersonation, and financial transfer requests.",
+    to: "/call-scan"
+  },
+  {
+    badge: "Web / Links",
+    title: "Website Scanner",
+    description: "Inspect suspicious URLs, phishing forms, malicious link patterns, and SSL hygiene.",
+    to: "/website-scan"
+  }
 ];
 
 function Home() {
@@ -37,19 +59,19 @@ function Home() {
             Why SecureX
           </p>
           <h2 className="mt-3 font-display text-3xl font-bold">
-            Built for messages that pressure, impersonate, and manipulate.
+            Built for modern fraud surfaces, not just one input box.
           </h2>
           <p className="mt-4 text-sm leading-7 text-[color:var(--muted-text)]">
-            Phishing texts often rely on urgency, fear, fake rewards, or requests for
-            credentials. SecureX scores those patterns instantly and visualizes the result in a
-            way that is easy to act on.
+            SecureX started as a message detector and now expands that same privacy-first core into
+            call, URL, website, and e-commerce fraud analysis so risky patterns can be triaged in
+            one place.
           </p>
           <div className="mt-6">
             <Link
-              to="/detect"
+              to="/dashboard"
               className="inline-flex rounded-full border border-white/15 px-5 py-3 text-sm font-semibold transition hover:border-neon/40 hover:bg-white/5"
             >
-              Go to the detector
+              View the full platform
             </Link>
           </div>
         </div>
@@ -69,6 +91,12 @@ function Home() {
         </div>
       </section>
 
+      <section className="grid gap-5 lg:grid-cols-3">
+        {modules.map((module) => (
+          <ModuleCard key={module.title} {...module} />
+        ))}
+      </section>
+
       <section className="rounded-[2rem] border border-white/10 bg-[color:var(--panel-bg)] p-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-2xl">
@@ -76,7 +104,7 @@ function Home() {
               Detection workflow
             </p>
             <h2 className="mt-3 font-display text-3xl font-bold">
-              A simple path from suspicious text to clear action.
+              A simple path from suspicious content to a confident decision.
             </h2>
           </div>
           <div className="grid gap-4 lg:max-w-2xl lg:flex-1">

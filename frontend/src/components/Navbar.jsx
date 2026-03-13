@@ -2,7 +2,10 @@ import { Link, NavLink } from "react-router-dom";
 
 const navigationItems = [
   { label: "Home", to: "/" },
-  { label: "Detect", to: "/detect" }
+  { label: "Messages", to: "/message-scan" },
+  { label: "Calls", to: "/call-scan" },
+  { label: "Websites", to: "/website-scan" },
+  { label: "Dashboard", to: "/dashboard" }
 ];
 
 function Navbar({ theme, onToggleTheme }) {
@@ -16,7 +19,7 @@ function Navbar({ theme, onToggleTheme }) {
           <div>
             <p className="font-display text-lg font-semibold tracking-wide">SecureX</p>
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-[color:var(--muted-text)]">
-              Real-time scam intelligence
+              Real-time fraud intelligence
             </p>
           </div>
         </Link>

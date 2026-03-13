@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import { useTheme } from "./hooks/useTheme";
+import CallAnalyzer from "./pages/CallAnalyzer";
+import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Detect from "./pages/Detect";
-
-const getInitialTheme = () => {
-  const storedTheme = window.localStorage.getItem("securex-theme");
-  if (storedTheme === "light" || storedTheme === "dark") {
-    return storedTheme;
-  }
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
+import MessageScanner from "./pages/MessageScanner";
+import WebsiteScanner from "./pages/WebsiteScanner";
 
 function App() {
-  const [theme, setTheme] = useState(getInitialTheme);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    window.localStorage.setItem("securex-theme", theme);
-  }, [theme]);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <BrowserRouter>
@@ -33,13 +23,17 @@ function App() {
 
         <Navbar
           theme={theme}
-          onToggleTheme={() => setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"))}
+          onToggleTheme={toggleTheme}
         />
 
         <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-12 pt-24 sm:px-6 lg:px-8">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/message-scan" element={<MessageScanner />} />
             <Route path="/detect" element={<Detect />} />
+            <Route path="/call-scan" element={<CallAnalyzer />} />
+            <Route path="/website-scan" element={<WebsiteScanner />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </main>
       </div>

@@ -13,4 +13,5 @@ frontend/dist/
 backend/db.sqlite3
 backend/staticfiles/
 backend/detector/ml_model/model.pkl
+ai_models/text_model/model.pkl
 .DS_Store

@@ -1,11 +1,4 @@
-from django.urls import path
-
-from .views import ScamDetectionAPIView
+from apps.fraud_detection.urls import urlpatterns
 
 
 app_name = "detector"
-
-urlpatterns = [
-    path("detect/", ScamDetectionAPIView.as_view(), name="detect"),
-    path("detect-scam/", ScamDetectionAPIView.as_view(), name="detect-scam"),
-]
