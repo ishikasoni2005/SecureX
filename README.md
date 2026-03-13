@@ -1,182 +1,156 @@
-# 🔐 SecureX — AI-Powered Real-Time Scam Detection
+# SecureX
 
-SecureX is an **AI-powered web application** designed to detect **scam and fraudulent text messages** in real time using **Natural Language Processing (NLP) models**.  
+SecureX is a full-stack AI-powered web application that detects scam and phishing-style text
+messages in real time. Users paste a message into the React frontend, the Django API runs a
+scikit-learn NLP classifier, and the app returns:
 
-The system analyzes user-provided text and classifies it as **Scam or Safe**, helping users quickly identify potentially harmful content such as phishing attempts and spam messages.
+- `classification`
+- `confidence`
+- `explanation`
 
-This project was developed as part of an **AI-focused full-stack initiative** and later extended into an **IEEE research paper submission**.
+The system is privacy-focused by design: message text is processed in memory only and is not
+stored in SQLite.
 
----
+## Tech Stack
 
-# 🚀 Features
+- Frontend: React, Vite, Tailwind CSS, Axios
+- Backend: Django, Django REST Framework, django-cors-headers
+- AI / NLP: scikit-learn, nltk, pickle
+- Database: SQLite
 
-### 🔍 Real-Time Scam Detection
-Analyzes user input text and detects potential scam patterns using machine learning models.
+## Project Structure
 
-### 🤖 AI & NLP Integration
-Uses **NLP-based classification models** to identify phishing attempts, spam, and fraudulent messages.
-
-### ⚡ Fast Response Time
-Optimized API communication and frontend state handling to deliver **low-latency predictions**.
-
-### 📊 Result Visualization
-Displays prediction results clearly with **classification labels and confidence scores**.
-
-### 🔒 Privacy-Focused Design
-User input is processed **in memory only** and is not stored permanently in the database.
-
----
-
-# 🧰 Tech Stack
-
-| Layer | Technologies |
-|------|-------------|
-| **Frontend** | React.js, Tailwind CSS |
-| **Backend** | Django, Django REST Framework |
-| **AI / NLP** | Python, Scikit-learn, NLP preprocessing |
-| **Database** | SQLite / PostgreSQL |
-| **API Communication** | REST APIs |
-
----
-
-# 🧠 System Architecture
-
-
-User Input
-↓
-React Frontend
-↓
-Django REST API
-↓
-Text Preprocessing
-↓
-NLP / ML Model Prediction
-↓
-Scam Classification
-↓
-Response Sent to Frontend
-↓
-Result Visualization
-
-
----
-
-# 📂 Project Structure
-
-
-
+```text
 SecureX/
-│
-├── frontend/ # React.js application
-│ ├── src/
-│ │ ├── components/
-│ │ ├── pages/
-│ │ ├── services/
-│ │ └── App.jsx
-│ └── package.json
-│
-├── backend/ # Django backend
-│ ├── manage.py
-│ ├── securex/
-│ └── detector/
-│ ├── views.py
-│ ├── urls.py
-│ └── ml_model/
-│ ├── model.pkl
-│ ├── preprocess.py
-│ └── predictor.py
-│
-├── requirements.txt
-└── README.md
+├── backend/
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── securex/
+│   └── detector/
+│       ├── views.py
+│       ├── urls.py
+│       ├── serializers.py
+│       └── ml_model/
+│           ├── bootstrap.py
+│           ├── preprocess.py
+│           └── predictor.py
+└── frontend/
+    ├── package.json
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   └── services/
+    └── tailwind.config.js
+```
 
+## API
 
+### `POST /api/detect/`
 
----
+Request:
 
-# 🧠 My Contributions
+```json
+{
+  "text": "Your bank account will be suspended unless you verify it now."
+}
+```
 
-- Developed **responsive frontend interfaces** using React.js  
-- Integrated **React frontend with Django REST APIs**  
-- Implemented **async API communication and error handling**  
-- Optimized frontend state management for faster response  
-- Collaborated on **API design and ML model integration**
+Response:
 
----
+```json
+{
+  "classification": "Scam",
+  "confidence": 0.8734,
+  "explanation": "SecureX found scam-like signals in the language..."
+}
+```
 
-# 📘 Research Contribution
+`POST /api/detect-scam/` is also available as an alias.
 
-SecureX formed the basis of a **research paper submitted to an IEEE-affiliated, Scopus-indexed international conference (INDIACom-2026)**.
+## Backend Setup
 
-**Research Focus:**  
-AI-powered **real-time scam detection using NLP techniques**.
-
----
-
-# 🧠 Key Learnings
-
-- Applying **Natural Language Processing for scam detection**
-- Building **AI-powered full-stack applications**
-- Integrating **React frontend with Django REST backend**
-- Designing **scalable and modular architectures**
-- Translating practical software projects into **research-oriented solutions**
-
----
-
-# ⚙️ Installation & Setup
-
-## Prerequisites
-
-- Python 3.9+
-- Node.js
-- npm
-- pip
-- virtualenv
-
----
-
-# 1️⃣ Clone Repository
+1. Create and activate a virtual environment:
 
 ```bash
-git clone https://github.com/<your-username>/SecureX.git
-cd SecureX
-
-
-
-2️⃣ Backend Setup (Django)
 cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-python -m venv venv
-source venv/bin/activate
+2. Install dependencies:
 
+```bash
 pip install -r requirements.txt
+```
 
+3. Apply migrations:
+
+```bash
 python manage.py migrate
-python manage.py runserver
-Backend runs at:
-http://127.0.0.1:8000
-3️⃣ Frontend Setup (React)
-cd frontend
+```
 
+4. Generate the bundled ML artifact:
+
+```bash
+python manage.py train_detector_model
+```
+
+5. Run the API:
+
+```bash
+python manage.py runserver
+```
+
+The backend runs at `http://127.0.0.1:8000`.
+
+## Frontend Setup
+
+1. Install dependencies:
+
+```bash
+cd frontend
 npm install
-npm start
-Frontend runs at:
-http://localhost:3000
-📡 API Endpoint
-Detect Scam
-POST
-/api/detect/
-Request
-{
-"text": "Your bank account has been suspended. Click here to verify."
-}
-Response
-{
-"classification": "Scam",
-"confidence": 0.92
-}
-🔮 Future Improvements
-Email and SMS scam detection support
-Real-time browser extension integration
-Continuous model training with new scam datasets
-Deployment using Docker and cloud platforms
-User feedback system to improve model accuracy
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+The frontend runs at `http://127.0.0.1:5173`.
+
+## Environment Variables
+
+### Backend
+
+Use `backend/.env.example` as a reference:
+
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG`
+- `DJANGO_ALLOWED_HOSTS`
+- `DJANGO_CORS_ALLOWED_ORIGINS`
+
+### Frontend
+
+Use `frontend/.env.example`:
+
+- `VITE_API_BASE_URL`
+
+## ML Model Notes
+
+- `preprocess.py` normalizes URLs, emails, phone numbers, and stems tokens with `nltk`.
+- `bootstrap.py` trains a lightweight `TfidfVectorizer + LogisticRegression` pipeline.
+- `predictor.py` loads `model.pkl` via `pickle`, scores scam probability, and generates a
+  short explanation from feature contributions.
+
+If `model.pkl` is missing, SecureX can automatically generate it on first use after the Python
+dependencies are installed.
+
+## Production Notes
+
+- Disable `DJANGO_DEBUG` in production.
+- Replace `DJANGO_SECRET_KEY` with a strong unique secret.
+- Set strict `DJANGO_ALLOWED_HOSTS` and `DJANGO_CORS_ALLOWED_ORIGINS`.
+- Serve the React build through your preferred static hosting or reverse proxy.
+- Run `python manage.py collectstatic` if you later add backend-served static assets.
