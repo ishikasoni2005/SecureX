@@ -205,7 +205,6 @@ Pipeline:
 ### Call fraud detection
 
 Pipeline:
-
 1. use the provided transcript, or optionally transcribe mono WAV audio with Vosk
 2. run the shared message-detection pipeline
 3. add call-specific heuristics for:
