@@ -328,6 +328,10 @@ Use `backend/.env.example` as a reference:
 - `DJANGO_SECURE_SSL_REDIRECT`
 - `SECUREX_VOSK_MODEL_PATH` for optional local call-audio transcription
 
+### Database
+-MongoDB
+
+
 ### Frontend
 
 Use `frontend/.env.example`:
