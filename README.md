@@ -1,77 +1,48 @@
-# SecureX
+# 🔐 SecureX — Real-Time Fraud Detection System
 
-SecureX is a privacy-first fraud detection platform built with React and Django. It keeps the
-original scam-message detector working, then expands the same in-memory analysis pipeline across:
+A **privacy-first fraud detection platform** built with Django and Django REST Framework. Analyzes SMS messages, call transcripts, suspicious URLs, and e-commerce storefronts for fraud signals — entirely in-memory with zero data retention for submitted payloads.
 
-- SMS and text messages
-- call transcripts and optional WAV audio
-- suspicious URLs and phishing pages
-- e-commerce storefronts and checkout flows
+Sensitive data is masked before model inference. Every scanner returns an explainable risk decision.
 
-SecureX never stores submitted analysis payloads in SQLite. Sensitive data is masked before model
-inference, and every scanner returns an explainable risk decision.
+---
 
-## How SecureX Works Today
+## 🔍 What SecureX Detects
 
-### Request flow
+| Scanner | Input |
+|---------|-------|
+| Message Scanner | SMS / text messages |
+| Call Scanner | Call transcripts or mono WAV audio |
+| Website Scanner | Suspicious URLs and phishing pages |
+| E-commerce Scanner | Storefronts and checkout flows |
 
-1. The React frontend bootstraps a CSRF cookie with `GET /api/csrf/`.
-2. The user submits a scanner form from one of the pages:
-   - `/message-scan`
-   - `/call-scan`
-   - `/website-scan`
-   - `/dashboard` for storefront analysis
-3. Axios sends a JSON request to the Django API.
-4. Django routes the request through `ProtectedAnalysisView`, which:
-   - validates JSON input with DRF serializers
-   - enforces CSRF
-   - rate limits clients to `100` requests per IP per hour
-   - returns JSON errors without logging request-body content
-5. The target module runs in-memory analysis and returns:
-   - `classification`
-   - `confidence`
-   - `fraud_probability`
-   - `risk_score`
-   - `risk_level`
-   - `explanation`
-   - module-specific metadata such as masked text, link findings, transcript source, or SSL status
+---
 
-### ML model usage
+## ✨ Features
 
-- The shared text model lives under `ai_models/text_model/`.
-- `bootstrap.py` trains a scikit-learn TF-IDF + logistic regression pipeline and persists
-  `model.pkl`.
-- `predictor.py` lazy-loads the pickled pipeline and returns both a fraud probability and a short
-  explanation from weighted terms.
-- The model is reused by:
-  - message scanning
-  - call transcript analysis
-  - website text scoring
-  - e-commerce text scoring
+- In-memory analysis pipeline — zero payload persistence
+- Sensitive data masking before inference (OTPs, card numbers, Aadhaar, passwords)
+- Shared TF-IDF + Logistic Regression NLP model across all four scanners
+- Speech-to-text transcription for WAV audio via Vosk
+- Explainable risk output: classification, confidence, fraud probability, risk score, explanation
+- CSRF protection + rate limiting (100 req/IP/hour via `django-ratelimit`)
+- Secure headers: HSTS, `X-Frame-Options`, `nosniff`
+- No authentication required — fully anonymous usage
 
-### Frontend-backend interaction
+---
 
-- `frontend/src/services/api.js` centralizes Axios calls and CSRF bootstrapping.
-- `frontend/src/hooks/useScanner.js` standardizes loading, result, and error handling.
-- Each page submits only the fields needed for its module and renders the shared
-  `FraudScoreCard` result component.
-- The browser never needs user accounts or authentication for fraud analysis.
+## 🛠️ Tech Stack
 
-### API endpoints
+| Layer | Technology |
+|-------|------------|
+| Backend | Django, Django REST Framework |
+| NLP / ML | scikit-learn (TF-IDF + Logistic Regression), NLP pattern matching |
+| Speech-to-Text | Vosk (optional, mono WAV audio) |
+| Database | MySQL |
+| Security | `django-ratelimit`, CSRF, secure cookie config |
 
-- `GET /api/csrf/`
-- `GET /api/platform-overview/`
-- `POST /api/detect/`
-- `POST /api/detect-scam/`
-- `POST /api/message-scan/`
-- `POST /api/call-scan/`
-- `POST /api/url-scan/`
-- `POST /api/ecommerce-scan/`
+---
 
-The legacy `POST /api/detect/` and `POST /api/detect-scam/` routes still work and now map to the
-new message-scanning module.
-
-## Repository Architecture Map
+## 📂 Project Structure
 
 ```text
 SecureX/
@@ -79,77 +50,36 @@ SecureX/
 │   ├── phishing_model/
 │   │   └── heuristics.py
 │   ├── text_model/
-│   │   ├── bootstrap.py
-│   │   ├── predictor.py
+│   │   ├── bootstrap.py       # Trains TF-IDF + Logistic Regression → model.pkl
+│   │   ├── predictor.py       # Lazy-loads pipeline, returns fraud probability + explanation
 │   │   └── preprocess.py
 │   └── voice_model/
-│       └── transcriber.py
+│       └── transcriber.py     # Vosk WAV transcription
+│
 ├── backend/
-│   ├── manage.py
 │   ├── securex/
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   ├── asgi.py
 │   │   └── wsgi.py
 │   ├── apps/
-│   │   ├── fraud_detection/
-│   │   │   ├── urls.py
-│   │   │   └── views.py
+│   │   ├── fraud_detection/          # ProtectedAnalysisView routing
 │   │   ├── message_scanner/
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
 │   │   │   └── services/
 │   │   │       ├── detector.py
 │   │   │       └── sensitive_data_detector.py
 │   │   ├── call_scanner/
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
 │   │   │   └── services/detector.py
 │   │   ├── website_scanner/
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
 │   │   │   └── services/detector.py
 │   │   ├── ecommerce_detector/
-│   │   │   ├── serializers.py
-│   │   │   ├── views.py
 │   │   │   └── services/detector.py
 │   │   └── link_analyzer/
 │   │       └── services/link_scanner.py
-│   └── detector/
-│       ├── tests.py
-│       ├── urls.py
-│       ├── views.py
-│       └── management/commands/train_detector_model.py
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Analyzer.jsx
-│   │   │   ├── ExplanationPanel.jsx
-│   │   │   ├── FraudScoreCard.jsx
-│   │   │   ├── Hero.jsx
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── ResultCard.jsx
-│   │   │   ├── RiskIndicator.jsx
-│   │   │   ├── dashboard/ModuleCard.jsx
-│   │   │   └── scanners/
-│   │   │       ├── AudioAnalyzer.jsx
-│   │   │       └── URLAnalyzer.jsx
-│   │   ├── hooks/
-│   │   │   ├── useScanner.js
-│   │   │   └── useTheme.js
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── MessageScanner.jsx
-│   │   │   ├── Detect.jsx
-│   │   │   ├── CallAnalyzer.jsx
-│   │   │   ├── WebsiteScanner.jsx
-│   │   │   └── Dashboard.jsx
-│   │   ├── services/api.js
-│   │   ├── styles/theme.css
-│   │   └── utils/
-│   │       ├── encryption.js
-│   │       └── validators.js
-│   └── package.json
+│   ├── detector/                     # Legacy routes (still active)
+│   │   └── management/commands/train_detector_model.py
+│   └── manage.py
+│
 └── shared/
     ├── constants/scam_signals.json
     └── utils/
@@ -157,101 +87,60 @@ SecureX/
         └── signal_loader.py
 ```
 
-## Audit Summary
+---
 
-### Tight coupling found before the refactor
+## ⚙️ How It Works
 
-- The old `detector` app combined API transport, heuristics, privacy handling, and model loading in
-  one place.
-- Message-only logic was hard to reuse for calls, websites, and storefronts.
-- The frontend had a single detector page and a result card tied to one response shape.
-- Historical repo debris from earlier Node and CRA variants created a noisy git state and broken
-  workflow references.
+### Request Flow
 
-### Files removed from the active app
+1. Client sends request to a scanner endpoint
+2. `ProtectedAnalysisView` validates input via DRF serializers, enforces CSRF, applies rate limiting
+3. Target module runs in-memory analysis — no request body logged
+4. Response returned with: `classification`, `confidence`, `fraud_probability`, `risk_score`, `risk_level`, `explanation`, module metadata
 
-- `.github/workflows/deploy.yml`
-- `.github/workflows/docker-build.yml`
-- `frontend/src/components/TextAnalyzer.jsx`
-- `backend/detector/serializers.py`
-- `backend/detector/models.py`
-- `backend/detector/services/`
-- `backend/detector/ml_model/`
+### ML Model
 
-Historical deleted folders such as `securex-backend/`, `securex-frontend/`, and `ml/` are older
-tracked artifacts from previous project variants. They are not part of the active architecture.
+Shared across all four scanners (`ai_models/text_model/`):
+- `bootstrap.py` trains scikit-learn TF-IDF + Logistic Regression → persists `model.pkl`
+- `predictor.py` lazy-loads the pipeline, returns fraud probability + weighted-term explanation
 
-### Generated or local-only artifacts ignored
+---
 
-- `backend/.venv/`
-- `backend/db.sqlite3`
-- `ai_models/text_model/model.pkl`
-- `frontend/dist/`
-- `node_modules/`
-- `__pycache__/`
+## 🧠 Detection Pipelines
 
-## Fraud Detection Modules
+### Message Scanner
+Sensitive data masking → keyword fraud rules → link extraction + phishing heuristics → NLP prediction → combined score
 
-### Message fraud detection
+### Call Scanner
+Transcript input or WAV transcription (Vosk) → message pipeline → call-specific heuristics:
+OTP theft, authority impersonation, urgency pressure, remote-access requests, financial transfer demands
 
-Pipeline:
+### Website Scanner
+URL and domain risk → HTTPS check → phishing-form and urgency heuristics → NLP scoring on page text or HTML
 
-1. sensitive-data detection and masking
-2. keyword-based fraud rules
-3. link extraction and phishing-link heuristics
-4. scikit-learn NLP prediction
-5. combined fraud score and explanation output
+### E-commerce Scanner
+Suspicious discounts → risky payment methods → missing merchant identity → unusual checkout data requests → website scanner signals
 
-### Call fraud detection
+---
 
-Pipeline:
-1. use the provided transcript, or optionally transcribe mono WAV audio with Vosk
-2. run the shared message-detection pipeline
-3. add call-specific heuristics for:
-   - OTP theft
-   - bank or authority impersonation
-   - urgency / line-holding pressure
-   - remote-access pressure
-   - financial transfer requests
+## 🔌 API Reference
 
-### Website fraud detection
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/csrf/` | Bootstrap CSRF cookie |
+| GET | `/api/platform-overview/` | Platform stats |
+| POST | `/api/message-scan/` | Scan SMS / text message |
+| POST | `/api/call-scan/` | Analyze transcript or WAV audio |
+| POST | `/api/url-scan/` | Scan URL / phishing page |
+| POST | `/api/ecommerce-scan/` | Analyze storefront / checkout |
+| POST | `/api/detect/` | Legacy — maps to message scanner |
+| POST | `/api/detect-scam/` | Legacy — maps to message scanner |
 
-Pipeline:
+---
 
-1. URL and domain-risk analysis
-2. HTTPS presence check
-3. phishing-form and urgent-language heuristics
-4. shared NLP scoring on supplied page text or HTML snippet
-
-### E-commerce fraud detection
-
-Checks for:
-
-- suspicious deep discounts
-- risky payment methods
-- missing merchant identity
-- unusual checkout data requests
-- website fraud signals inherited from the website scanner
-
-## Privacy and Security Improvements
-
-- zero data retention for fraud-analysis payloads
-- in-memory masking of:
-  - credit card numbers
-  - bank account numbers
-  - OTP / verification codes
-  - Aadhaar numbers
-  - passwords
-- anonymous usage with no authentication required
-- CSRF protection for browser requests
-- `100` requests per IP per hour with `django-ratelimit`
-- secure cookies and HTTPS redirect support outside debug mode
-- stricter headers such as HSTS, `X-Frame-Options`, and `nosniff`
-
-## Example Responses
+## 📊 Example Responses
 
 ### `POST /api/message-scan/`
-
 ```json
 {
   "classification": "Scam",
@@ -264,14 +153,11 @@ Checks for:
     "Credential harvesting pattern detected",
     "ML model detected fraud-linked language patterns."
   ],
-  "warnings": [
-    "Sensitive data detected: possible OTP or verification code."
-  ]
+  "warnings": ["Sensitive data detected: possible OTP or verification code."]
 }
 ```
 
 ### `POST /api/url-scan/`
-
 ```json
 {
   "classification": "Fraud Risk",
@@ -288,9 +174,9 @@ Checks for:
 }
 ```
 
-## Local Development
+---
 
-### Backend
+## ⚙️ Setup
 
 ```bash
 cd backend
@@ -302,52 +188,38 @@ python manage.py train_detector_model
 python manage.py runserver
 ```
 
-Backend runs at `http://127.0.0.1:8000`.
+Runs at `http://127.0.0.1:8000`
 
-### Frontend
+### Environment Variables
 
-```bash
-cd frontend
-npm install
-npm run dev
+Copy `backend/.env.example` and configure:
+
+```env
+DJANGO_SECRET_KEY=
+DJANGO_DEBUG=
+DJANGO_ALLOWED_HOSTS=
+DJANGO_CORS_ALLOWED_ORIGINS=
+DJANGO_CSRF_TRUSTED_ORIGINS=
+DJANGO_SECURE_SSL_REDIRECT=
+SECUREX_VOSK_MODEL_PATH=     # optional — WAV audio transcription
 ```
 
-Frontend runs at `http://127.0.0.1:5173`.
+---
 
-## Environment Variables
-
-### Backend
-
-Use `backend/.env.example` as a reference:
-
-- `DJANGO_SECRET_KEY`
-- `DJANGO_DEBUG`
-- `DJANGO_ALLOWED_HOSTS`
-- `DJANGO_CORS_ALLOWED_ORIGINS`
-- `DJANGO_CSRF_TRUSTED_ORIGINS`
-- `DJANGO_SECURE_SSL_REDIRECT`
-- `SECUREX_VOSK_MODEL_PATH` for optional local call-audio transcription
-
-### Database
--MongoDB
-
-
-### Frontend
-
-Use `frontend/.env.example`:
-
-- `VITE_API_BASE_URL`
-
-## Verification
-
-These checks were run locally after the refactor:
+## ✅ Verification
 
 ```bash
-cd backend
 ./.venv/bin/python manage.py check
 ./.venv/bin/python manage.py train_detector_model
 ./.venv/bin/python manage.py test detector
-
-cd ../frontend
-npm run build
 ```
+
+---
+
+## 🔒 Privacy Guarantees
+
+- Zero retention for analysis payloads
+- In-memory masking: credit card numbers, bank account numbers, OTPs, Aadhaar, passwords
+- Fully anonymous — no authentication required
+- CSRF enforced on all state-changing endpoints
+- Rate limited: 100 requests/IP/hour
